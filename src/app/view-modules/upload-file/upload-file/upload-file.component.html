@@ -1,0 +1,67 @@
+<div class="container" *ngIf="!showTable">
+    <form #fileForm=ngForm (ngSubmit)="onSubmit(Image)">
+        <div class="center">
+            <input type="file" #Image accept=".xlsx,.xls" (change)="handleFileInput($event.target.files)">
+            <button type="submit" class="btn-small btn-submit btn-primary">Upload</button>
+        </div>
+    </form>
+</div>
+<div *ngIf="showTable">
+    <app-dashboard [transactions]="receivedTransactions"></app-dashboard>
+
+    <div class="row">
+        <button pButton type="button" style="margin:0.5em" label="Upload Another File" (click)="toggleShowTable()"
+            class="ui-button-warning"></button>
+        <button pButton type="button" style="margin:0.5em" label="Screen All Transactions"
+            (click)="screenAllTransactions()" class="ui-button-warning"></button>
+        <input id="disabled-input" style="margin:0.5em; width:50%" type="text" size="30" pInputText
+            [(ngModel)]="keywordToAdd" placeholder="Add a keyword" />
+        <button id="disabled-btn" style="margin:0.5em" type="button" (click)="addKeyword()" pButton
+            label="Add"></button>
+    </div>
+
+    <p-toast position="top-left"></p-toast>
+    <p-table #dt [columns]="columns" [value]="receivedTransactions">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <ng-container *ngFor="let col of columns">
+                    <th *ngIf="col.header === 'Amount'" [pSortableColumn]="col.field"> {{col.header}}
+                        <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                            ariaLabelDesc="Activate to sort in descending order"
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+
+                    </th>
+                    <th *ngIf="col.header !== 'Amount'">
+
+                        {{col.header}}
+                    </th>
+                </ng-container>
+                <th></th>
+            </tr>
+            <tr>
+
+                <ng-container *ngFor="let col of columns">
+                    <th *ngIf="col.header !== 'Status'">
+
+                    </th>
+                    <th *ngIf="col.header === 'Status'">
+
+                        <p-multiSelect [options]="statusList" appendTo="body" defaultLabel="All Statuses"
+                            (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+                    </th>
+                </ng-container>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                </td>
+                <td><button type="button" (click)="screen(rowData)" [disabled]="rowData.status!=='VALIDATE_PASS'"
+                        pButton label="Screen"></button></td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
