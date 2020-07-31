@@ -8,7 +8,7 @@ export class LoginService {
   serviceUrl = "http://192.168.43.124:8080";
   
   constructor(private http:HttpClient) { }
-  checkLoginCustomer(obj){
+  checkLogin(obj){
     return this.http.post(this.serviceUrl+ "/login",obj)
   }
 }

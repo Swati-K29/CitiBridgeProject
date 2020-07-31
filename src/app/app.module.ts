@@ -12,8 +12,6 @@ import { LoginComponent } from './login/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import {ButtonModule} from 'primeng/button';
-import {MatCardModule,MatTabsModule,MatFormFieldModule,MatInputModule,MatButtonModule,MatCheckboxModule,MatIconModule} from '@angular/material';
-import {MatTableModule} from '@angular/material/table';
 import { UploadFileComponent } from 'src/app/view-modules/upload-file/upload-file/upload-file.component';
 import { UploadService } from 'src/app/services/upload.service';
 import { LoginService } from "src/app/services/login.service";
@@ -22,6 +20,10 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { MessageService } from 'primeng';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {CardModule} from 'primeng/card';
+import {InputTextModule} from 'primeng/inputtext';
+import {PasswordModule} from 'primeng/password';
 
 
 
@@ -37,6 +39,9 @@ import { MessageService } from 'primeng';
   ],
   imports: [
     BrowserModule,
+    InputTextModule,
+    PasswordModule,
+    CardModule,
     RouterModule,
     AppRoutingModule,
     FormsModule,
@@ -47,14 +52,7 @@ import { MessageService } from 'primeng';
     TableModule,
     ToastModule,
     MultiSelectModule,
-    MatCardModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatTableModule
+    ProgressSpinnerModule
   ],
   providers: [UploadService,LoginService, TransactionService , MessageService],
   bootstrap: [AppComponent]

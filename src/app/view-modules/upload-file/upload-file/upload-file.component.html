@@ -1,4 +1,10 @@
-<div class="container" *ngIf="!showTable">
+<div class="container-scroller">
+        <app-navbar></app-navbar>
+          <div class="container-fluid page-body-wrapper">  
+            <app-sidebar></app-sidebar>
+            <div class="main-panel">
+              <div class="content-wrapper">
+<div class="container" *ngIf="showFileUpload">
     <form #fileForm=ngForm (ngSubmit)="onSubmit(Image)">
         <div class="center">
             <input type="file" #Image accept=".xlsx,.xls" (change)="handleFileInput($event.target.files)">
@@ -6,6 +12,7 @@
         </div>
     </form>
 </div>
+<p-progressSpinner *ngIf="showLoader"></p-progressSpinner>
 <div *ngIf="showTable">
     <app-dashboard [transactions]="receivedTransactions"></app-dashboard>
 
@@ -46,7 +53,7 @@
                     </th>
                     <th *ngIf="col.header === 'Status'">
 
-                        <p-multiSelect [options]="statusList" appendTo="body" defaultLabel="All Statuses"
+                        <p-multiSelect [options]="statusList" appendTo="body" [panelStyle]="{'minWidth': '5em'}" defaultLabel="All Statuses"
                             (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
                     </th>
                 </ng-container>
@@ -55,7 +62,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
-                <td *ngFor="let col of columns">
+                <td *ngFor="let col of columns" style="font-size:12px">
                     {{rowData[col.field]}}
                 </td>
                 <td><button type="button" (click)="screen(rowData)" [disabled]="rowData.status!=='VALIDATE_PASS'"
@@ -63,5 +70,16 @@
 
             </tr>
         </ng-template>
+        <ng-template pTemplate="footer">
+            <tr *ngIf="receivedTransactions.length ==0">
+                <td [attr.colspan]="9" style="text-align: center">No Data To Display</td>
+            </tr>
+
+        </ng-template>
     </p-table>
+</div>
+</div>
+<app-footer></app-footer>
+</div>
+</div>
 </div>
