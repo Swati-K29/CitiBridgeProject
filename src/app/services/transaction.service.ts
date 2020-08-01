@@ -6,7 +6,7 @@ import {Transaction} from 'src/app/models/transaction';
   providedIn: 'root'
 })
 export class TransactionService {
-  serviceUrl = "http://192.168.43.124:8080";
+  serviceUrl = "http://localhost:8080";
   constructor(private http:HttpClient) { }
 
   screenTransactions(transactions: Transaction[] ) {

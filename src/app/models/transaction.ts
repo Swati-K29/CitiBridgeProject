@@ -1,10 +1,10 @@
 export class Transaction{
-    Trans_ref:string;
-    Date:string;
-    Payer_Name:string;
-    Payer_Acc:string;
-    Payee_Name:string;
-    Payee_Acc:string;
-    Amount:string;
+    transRef:string;
+    date:string;
+    payerName:string;
+    payerAcc:string;
+    payeeName:string;
+    payeeAcc:string;
+    amount:string;
     status: string;
 }

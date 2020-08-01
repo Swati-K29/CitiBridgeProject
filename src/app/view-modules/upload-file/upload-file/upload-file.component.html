@@ -8,18 +8,19 @@
     <form #fileForm=ngForm (ngSubmit)="onSubmit(Image)">
         <div class="center">
             <input type="file" #Image accept=".xlsx,.xls" (change)="handleFileInput($event.target.files)">
-            <button type="submit" class="btn-small btn-submit btn-primary">Upload</button>
+            <button type="submit" [disabled]= "isUpload" class="btn-small btn-submit btn-primary">Upload</button>
         </div>
     </form>
 </div>
 <p-progressSpinner *ngIf="showLoader"></p-progressSpinner>
+<p-toast position="bottom-right"></p-toast>
 <div *ngIf="showTable">
     <app-dashboard [transactions]="receivedTransactions"></app-dashboard>
 
     <div class="row">
         <button pButton type="button" style="margin:0.5em" label="Upload Another File" (click)="toggleShowTable()"
             class="ui-button-warning"></button>
-        <button pButton type="button" style="margin:0.5em" label="Screen All Transactions"
+        <button pButton type="button" [disabled]="receivedTransactions.length == 0 || allTransactionsValidateFailed" style="margin:0.5em" label="Screen All Transactions"
             (click)="screenAllTransactions()" class="ui-button-warning"></button>
         <input id="disabled-input" style="margin:0.5em; width:50%" type="text" size="30" pInputText
             [(ngModel)]="keywordToAdd" placeholder="Add a keyword" />
@@ -27,7 +28,7 @@
             label="Add"></button>
     </div>
 
-    <p-toast position="top-left"></p-toast>
+ 
     <p-table #dt [columns]="columns" [value]="receivedTransactions">
         <ng-template pTemplate="header" let-columns>
             <tr>

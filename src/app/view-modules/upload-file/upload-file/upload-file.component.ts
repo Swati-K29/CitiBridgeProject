@@ -3,6 +3,7 @@ import { UploadService } from 'src/app/services/upload.service';
 import { Transaction } from 'src/app/models/transaction';
 import { MessageService, SelectItem } from 'primeng';
 import { TransactionService } from 'src/app/services/transaction.service';
+import { IfStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-upload-file',
@@ -13,9 +14,11 @@ export class UploadFileComponent implements OnInit {
   fileToUpload: File;
   receivedTransactions: Transaction[] = [];
   keywordToAdd: string;
+  allTransactionsValidateFailed: boolean = false;
   showTable: boolean = false;
   showFileUpload: boolean = true;
   showLoader: boolean = false;
+  isUpload : boolean = false;
   statusList: SelectItem[] = [
     { label: 'Validate Pass', value: 'VALIDATE_PASS' },
     { label: 'Validate Fail', value: 'VALIDATE_FAIL' },
@@ -24,13 +27,13 @@ export class UploadFileComponent implements OnInit {
 
   ];
   columns = [
-    { field: 'Trans_ref', header: 'Transaction Reference' },
-    { field: 'Date', header: 'Date' },
-    { field: 'Payer_Name', header: 'Payer Name' },
-    { field: 'Payer_Acc', header: 'Payer Account' },
-    { field: 'Payee_Name', header: 'Payee Name' },
-    { field: 'Payee_Acc', header: 'Payee Acccount ' },
-    { field: 'Amount', header: 'Amount' },
+    { field: 'transRef', header: 'Transaction Reference' },
+    { field: 'date', header: 'Date' },
+    { field: 'payerName', header: 'Payer Name' },
+    { field: 'payerAcc', header: 'Payer Account' },
+    { field: 'payeeName', header: 'Payee Name' },
+    { field: 'payeeAcc', header: 'Payee Acccount ' },
+    { field: 'amount', header: 'Amount' },
     { field: 'status', header: 'Status' }
 
   ];
@@ -49,19 +52,35 @@ export class UploadFileComponent implements OnInit {
 
   toggleShowTable() {
     this.showFileUpload = true;
+    this.showTable = false;
+    this.showLoader = false;
+    this.keywordToAdd='';
+    this.isUpload = false;
+    this.fileToUpload = null;
+    this.receivedTransactions = [];
   }
 
   onSubmit(Image: any) {
+    
+    this.receivedTransactions = [];
     if (this.fileToUpload && this.fileToUpload.size > 0 /* && this.fileToUpload.name.match("Transaction\\d{1,}\\.xl*")*/) {
+      this.isUpload = true;
       this.fileService.postFile(this.fileToUpload).subscribe(
         (result: Transaction[]) => {
-          this.receivedTransactions = result;
+          if(result && result.length > 0) {
+            this.receivedTransactions = result;
+            let _filteredTransactions: Transaction[] = this.receivedTransactions.filter(item => item.status !== "VALIDATE_FAIL");
+            
+            this.allTransactionsValidateFailed = _filteredTransactions.length > 0 ? false : true;
+            
+           }
+          
           this.showTable = true;
           this.showFileUpload = false;
         }
       );
     } else {
-      this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Please upload a valid excel file' });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please upload a valid excel file' });
     }
   }
 
@@ -70,6 +89,7 @@ export class UploadFileComponent implements OnInit {
     this.fileService.addKeyword(this.keywordToAdd)
       .subscribe((result) => {
         if (result) {
+          this.keywordToAdd='';
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Keyword added successfully' });
         } else {
           this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Failed to add keyword' });
@@ -97,18 +117,21 @@ export class UploadFileComponent implements OnInit {
 
   screenTransactions(transactions: Transaction[]) {
 
-    this.transactionService.screenTransactions(transactions).subscribe(result => {
-      result.forEach((trans) => {
-        this.receivedTransactions.forEach((resultItem) => {
-          if (trans.Trans_ref === resultItem.Trans_ref) {
+    this.transactionService.screenTransactions(transactions).subscribe((result: Transaction[]) => {
+      this.showLoader = false;
+      result.forEach((resultItem) => {
+        
+        this.receivedTransactions.forEach((trans) => {
+          if (trans.transRef === resultItem.transRef) {
             trans.status = resultItem.status;
           }
 
         });
-        this.showLoader = false;
+        
 
-        this.showTable = true;
+        
       });
+      this.showTable = true;
     }, err => {
       this.messageService.add({ severity: 'warn', summary: 'Error', detail: 'Failed to screen' });
     });
