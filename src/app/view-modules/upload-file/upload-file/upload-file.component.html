@@ -29,7 +29,7 @@
     </div>
 
  
-    <p-table #dt [columns]="columns" [value]="receivedTransactions">
+    <p-table #dt [columns]="columns" [value]="receivedTransactions" [paginator]="true" [rows]="5"[alwaysShowPaginator]="false">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <ng-container *ngFor="let col of columns">
