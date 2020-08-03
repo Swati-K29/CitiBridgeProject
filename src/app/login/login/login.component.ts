@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
 import { LoginService } from 'src/app/services/login.service';
 import { UserMaster } from 'src/app/models/user';
 import { MessageService } from 'primeng';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -12,13 +12,12 @@ import { MessageService } from 'primeng';
 export class LoginComponent implements OnInit {
   userName: string = "";
   password: string = "";
-  isValidUser: boolean;
   hasError: boolean = false;
 
 
   constructor(private loginService: LoginService, 
     private messageService: MessageService,
-    private router: Router) { }
+    private myRoute: Router) { }
 
   ngOnInit() {
   }
@@ -30,13 +29,15 @@ export class LoginComponent implements OnInit {
     } else {
       this.hasError = false;
     }
+
     let temp:UserMaster = { userId: this.userName, password: btoa(this.password.split('').reverse().join('')) };
     this.loginService.checkLogin(temp).subscribe((result: boolean) => {
-      this.isValidUser = result;
-      if (result) {
-        this.router.navigate(['/upload-file']);
-      } else {
+      this.loginService.isValidUser = result;
+      sessionStorage.setItem("isLoggedIn", String(result));
+      if (!result) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Incorrect Password' });
+      } else {
+        this.myRoute.navigate(['/upload-file']);
       }
     }, err => {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Unable to fetch data, server down' });

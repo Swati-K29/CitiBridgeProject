@@ -7,6 +7,8 @@ import { UserMaster } from '../models/user';
 })
 export class LoginService {
   serviceUrl = "http://localhost:8080";
+
+  isValidUser: boolean = false;
   
   constructor(private http:HttpClient) { }
 

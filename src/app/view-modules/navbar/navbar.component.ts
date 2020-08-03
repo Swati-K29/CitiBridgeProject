@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -9,8 +10,16 @@ import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 })
 export class NavbarComponent implements OnInit {
 
+  constructor(private router :  Router) {
+
+  }
+
   ngOnInit() {
   }
 
+  logout() {
+    sessionStorage.clear();
+this.router.navigate(['/login']);
+  }
 
 }
